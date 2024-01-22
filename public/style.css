@@ -1,0 +1,26 @@
+body{
+    padding-top: 40px;
+    font-family: 'Courier New', Courier, monospace;
+    text-align: center;
+    background-color: rgb(218, 220, 192);
+    display: flex;
+    justify-content: space-evenly;
+    gap: 40px;
+}
+
+#board{
+    background: url('./assets//flappybirdbg.png');
+    background-size: contain;
+    border-radius: 10px;
+}
+
+h1{
+    font-size: 30px;
+}
+p{
+    max-width: 70%;
+    margin: auto;
+}
+.info, .how-to{
+    min-width: 30%;
+}
