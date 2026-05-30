@@ -1,0 +1,36 @@
+name: Update Infra Repo
+
+on:
+  workflow_run:
+    workflows:
+      - Build Docker Image
+    types:
+      - completed
+
+jobs:
+  update-infra:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout infra-services repo
+        uses: actions/checkout@v4
+        with:
+          repository: plamencode/infra-services
+          token: ${{ secrets.INFRA_REPO_TOKEN }}
+          path: infra-services
+
+      - name: Update flappy-birds-clone deployment image
+        run: |
+          cd infra-services/main
+
+          NEW_TAG="${{ github.event.workflow_run.run_number }}"
+
+          sed -i "s|image: plamencode/flappy-birds-clone:.*|image: plamencode/flappy-birds-clone:${NEW_TAG}|" flappy-birds-deployment.yml
+
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git add flappy-birds-deployment.yml
+          git commit -m "[Auto Deploy] Update flappy-birds-clone image to ${NEW_TAG}" || echo "No changes to commit"
+          git push
